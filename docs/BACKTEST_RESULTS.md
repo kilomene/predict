@@ -49,3 +49,55 @@ Note this population (all five leagues, rolling early-season states) is
 harder than the Premier League second-half test above (57.9%). The ML
 blend weight chosen by validation log-loss was 0.85; the daily runner caps
 it at 0.50 against its stronger xG-aggregate model, conservatively.
+
+## v2.0 core — walk-forward (train 2023/24+2024/25, test 2025/26, big-5, 1,607 matches)
+
+Reproduce: `PYTHONPATH=src python -m predict_agent.fit_v2`
+Pipeline compared on identical test matches (rolling Poisson core):
+
+| Stage | Accuracy | Log-loss | ECE | Draw pred vs actual |
+|---|---|---|---|---|
+| v0.3-style (rho −0.08 fixed, raw) | 47.9% | 1.1109 | 0.0946 | 24.5% vs 25.9% |
+| + per-league fitted rho | 48.2% | 1.1094 | 0.0992 | 23.2% vs 25.9% |
+| + vector-scaling calibration | **49.3%** | **1.0407** | **0.0264** | **25.7% vs 25.9%** |
+
+Findings, honestly:
+- Fitted rho came out ≈ 0.00 (E0, I1, F1) and −0.02 (SP1, D1): the textbook
+  −0.08 is wrong for modern big-5 rolling lambdas, and rho alone does NOT fix
+  draw calibration (gap widened to −2.7 pts before calibration).
+- Calibration is the big lever: log-loss −0.069, ECE 0.095 → 0.026 (target
+  ≤ 0.05 met), draw gap −0.2 pts (target ±1.5 met).
+- The gate (thresholds swept on train, judged on test): at single_min 0.53,
+  singles hit 63.2% at 23% coverage; double-chance 77.6% at its band.
+  The pre-registered target "≥62% singles at ≥30% coverage" was NOT met by
+  the core-only pipeline (59.9% at 33% coverage) — recorded as a miss, to be
+  re-tested after phase-2 sharpening (pi-ratings, xG-EWMA, calibrated ML stack).
+- This harness's baseline is the rolling Poisson CORE (no Elo blend / ML),
+  weaker than the full v0.3 stack's 50.2% — comparisons above are core-vs-core.
+
+## v2.0 phase 2 — pi-ratings and xG-EWMA (walk-forward)
+
+Pi-ratings head vs result-only Elo head (same matches, league totals rolling):
+
+| Season | Pi head acc / log-loss | Elo head acc / log-loss |
+|---|---|---|
+| 2024/25 (n=1,652) | 50.3% / 1.0189 | 48.9% / 1.0301 |
+| 2025/26 (n=1,652) | 49.8% / 1.0326 | 47.9% / 1.0341 |
+
+xG-EWMA lambdas vs goals-rolling lambdas (2025/26, warmed on 2024/25, n=1,714):
+
+| Lambda source | Accuracy | Log-loss |
+|---|---|---|
+| goals-rolling (current core) | 48.4% | 1.0865 |
+| xG-EWMA alone | 47.8% | 1.0546 |
+| 50/50 blend | **48.7%** | 1.0559 |
+
+xG improves probability quality materially (log-loss −0.032 alone) but not
+argmax by itself; the blend improves both. Pi-ratings and the xG blend are
+built and measured; folding them into the ML retrain is the next step.
+
+Basketball: the possessions model (pace/ORtg/DRtg from ESPN team stats +
+standings) is live-verified against the real API (30 teams, sensible
+ratings, matchup totals vary — e.g. Hawks–Celtics 225.8 vs the old dummy's
+flat 220). Backtest target ≥64% winner accuracy grades itself from the
+daily ledger as results settle.
