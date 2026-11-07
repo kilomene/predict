@@ -34,3 +34,18 @@ Anyone — human or AI — who promises you routine correct scores, guaranteed
 scorers, or "very very accurate everything" is selling you something.
 What a serious system gives you: calibrated probabilities, the full distribution
 for every market, and a measured record you can audit. That is what this repo does.
+
+## ML ensemble validation (2025/26, all big-5 leagues, 1,607 matches)
+
+Rolling leakage-free features; trained on 2021/22–2024/25 (6,570 matches):
+
+| Model | 1X2 accuracy | Log-loss |
+|---|---|---|
+| Poisson/Dixon-Coles (rolling) | 48.1% | 1.0505 |
+| ML (GBM + LogReg) | 50.1% | 1.0177 |
+| Ensemble (stacked) | 50.2% | 1.0169 |
+
+Note this population (all five leagues, rolling early-season states) is
+harder than the Premier League second-half test above (57.9%). The ML
+blend weight chosen by validation log-loss was 0.85; the daily runner caps
+it at 0.50 against its stronger xG-aggregate model, conservatively.
