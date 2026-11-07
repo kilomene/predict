@@ -25,7 +25,7 @@ own words from that study; where the manuals are silent, it says so.*
    match clock (off by more than 5 minutes), or on an event that had already happened can be
    voided by the bookmaker.
 5. **Pre-match and live are two different shops.** Whole market families exist on one side
-   only (see §9). Anything involving minutes is a live-only product.
+   only (see §12). Anything involving minutes is a live-only product.
 
 ## 2. How to read a market name — the two numbers
 
@@ -102,15 +102,45 @@ over or under a given line.* Lines come in three kinds, and the kind decides the
 | Whole lines | 1, 2, 3 | Win, lose, or **void** (stake back) if the total lands exactly on the line |
 | Quarter lines | 0.75, 1.25, 2.25, 2.75 | The stake splits across the two neighbouring lines: win, lose, half-win, or half-lose |
 
-Worked rows from the manual's settlement table (totals in regular time):
+**The manual's Over/Under settlement table — in full.** Every line the book offers, every
+total-goals outcome, both sides. (Regular time totals; the same grid settles any scoped
+version — team, half, interval — inside its own scope.)
 
-- **0.5** — Over wins at 1+ goals; **Under wins only at 0 goals.** Under 0.5 on a full match is
-  a bet on 0–0.
-- **2.0** — exactly 2 goals = void; 3+ Over; 0–1 Under.
-- **2.25** — exactly 2 goals: Over loses half, Under wins half; 3+ Over; 0–1 Under.
-- **2.5** — 3+ Over; 0–2 Under.
-- **2.75** — exactly 3: Over wins half, Under loses half; 4+ Over; 0–2 Under.
-- **3.0** — exactly 3 = void; 4+ Over; 0–2 Under.
+| Line | Total goals | Over settles | Under settles |
+|---|---|---|---|
+| 0.5 | 0 | Lose | **Win** |
+| 0.5 | 1+ | **Win** | Lose |
+| 0.75 | 0 | Lose | **Win** |
+| 0.75 | 1 | Half win | Half lose |
+| 0.75 | 2+ | **Win** | Lose |
+| 1.0 | 0 | Lose | **Win** |
+| 1.0 | 1 | Void | Void |
+| 1.0 | 2+ | **Win** | Lose |
+| 1.25 | 0 | Lose | **Win** |
+| 1.25 | 1 | Half lose | Half win |
+| 1.25 | 2+ | **Win** | Lose |
+| 1.5 | 0–1 | Lose | **Win** |
+| 1.5 | 2+ | **Win** | Lose |
+| 1.75 | 0–1 | Lose | **Win** |
+| 1.75 | 2 | Half win | Half lose |
+| 1.75 | 3+ | **Win** | Lose |
+| 2.0 | 0–1 | Lose | **Win** |
+| 2.0 | 2 | Void | Void |
+| 2.0 | 3+ | **Win** | Lose |
+| 2.25 | 0–1 | Lose | **Win** |
+| 2.25 | 2 | Half lose | Half win |
+| 2.25 | 3+ | **Win** | Lose |
+| 2.5 | 0–2 | Lose | **Win** |
+| 2.5 | 3+ | **Win** | Lose |
+| 2.75 | 0–2 | Lose | **Win** |
+| 2.75 | 3 | Half win | Half lose |
+| 2.75 | 4+ | **Win** | Lose |
+| 3.0 | 0–2 | Lose | **Win** |
+| 3.0 | 3 | Void | Void |
+| 3.0 | 4+ | **Win** | Lose |
+
+Read the owner's core play off this grid: line **0.5**, total **0** → Under wins. Under 0.5 on a
+full match is a bet on 0–0; Under 0.5 inside a `from 1 to 15` window is the no-goal play of §3.
 
 The same line logic applies inside any scope the market names: full match, one team
 (Home/Away Team Over/Under), one half, or one interval window (§3, Door B). Scope is always in
@@ -173,6 +203,88 @@ Related goal-timing markets:
 | **Teams to Score / Clean Sheet** | Which teams score; which teams keep a clean sheet | Team-level building blocks used by many combos |
 | **Win to Nil** | A team wins **and** concedes nothing | Manual spelling: "Win to Nill" |
 
+### The Asian Handicap settlement table — in full
+
+The manual settles Asian Handicap from a master table: your team's handicap against your
+team's actual result. Every line, both directions, transcribed whole — this is the table the
+one-line summary in §6 above was compressing. A minus handicap means your team *gives* the
+start; plus means it *receives* it.
+
+| Handicap on your team | Your team's result | Bet settles |
+|---|---|---|
+| 0 | Win | Win |
+| 0 | Draw | Void (stake back) |
+| 0 | Lose | Lose |
+| −0.25 | Win | Win |
+| −0.25 | Draw | Half lose |
+| −0.25 | Lose | Lose |
+| +0.25 | Win | Win |
+| +0.25 | Draw | Half win |
+| +0.25 | Lose | Lose |
+| −0.5 | Win | Win |
+| −0.5 | Draw | Lose |
+| −0.5 | Lose | Lose |
+| +0.5 | Win | Win |
+| +0.5 | Draw | Win |
+| +0.5 | Lose | Lose |
+| −0.75 | Win by 2+ | Win |
+| −0.75 | Win by 1 | Half win |
+| −0.75 | Draw | Lose |
+| −0.75 | Lose | Lose |
+| +0.75 | Win | Win |
+| +0.75 | Draw | Win |
+| +0.75 | Lose by 1 | Half lose |
+| +0.75 | Lose by 2+ | Lose |
+| −1 | Win by 2+ | Win |
+| −1 | Win by 1 | Void |
+| −1 | Draw | Lose |
+| −1 | Lose | Lose |
+| +1 | Win | Win |
+| +1 | Draw | Win |
+| +1 | Lose by 1 | Void |
+| +1 | Lose by 2+ | Lose |
+| −1.25 | Win by 2+ | Win |
+| −1.25 | Win by 1 | Half lose |
+| −1.25 | Draw | Lose |
+| −1.25 | Lose | Lose |
+| +1.25 | Win | Win |
+| +1.25 | Draw | Win |
+| +1.25 | Lose by 1 | Half win |
+| +1.25 | Lose by 2+ | Lose |
+| −1.5 | Win by 2+ | Win |
+| −1.5 | Win by 1 | Lose |
+| −1.5 | Draw | Lose |
+| −1.5 | Lose | Lose |
+| +1.5 | Win | Win |
+| +1.5 | Draw | Win |
+| +1.5 | Lose by 1 | Win |
+| +1.5 | Lose by 2+ | Lose |
+| −1.75 | Win by 3+ | Win |
+| −1.75 | Win by 2 | Half win |
+| −1.75 | Win by 1 | Lose |
+| −1.75 | Draw | Lose |
+| −1.75 | Lose | Lose |
+| +1.75 | Win | Win |
+| +1.75 | Draw | Win |
+| +1.75 | Lose by 1 | Win |
+| +1.75 | Lose by 2 | Half lose |
+| +1.75 | Lose by 3+ | Lose |
+| −2 | Win by 3+ | Win |
+| −2 | Win by 2 | Void |
+| −2 | Win by 1 | Lose |
+| −2 | Draw | Lose |
+| −2 | Lose | Lose |
+| +2 | Win | Win |
+| +2 | Draw | Win |
+| +2 | Lose by 1 | Win |
+| +2 | Lose by 2 | Void |
+| +2 | Lose by 3+ | Lose |
+
+The pattern underneath the table: whole lines can void, half lines never split, and quarter
+lines are two half-bets in one — half the stake on the line above, half on the line below
+(e.g. −0.75 = half on −0.5, half on −1.0). The same split logic drives the quarter rows of
+the Over/Under table in §4.
+
 ## 7. Halves
 
 Every core idea repeats per half, and a half is settled **only on goals within that half**
@@ -193,11 +305,17 @@ re-taken corner counts once. Markets: total Corners Over/Under, Corners 1X2 (whi
 more), per-team totals, Corner Handicap, Corner Range, Nth Corner, Last Corner, Race to X
 Corners, odd/even — plus half and 5/10/15-minute interval versions of the same ideas.
 
-**Bookings** counting, from the manual: a yellow card = **1 card**, a red or second-yellow red
-= **2 cards**; the second yellow itself is not double-counted, so one player can cause at most
-**3 cards**. Booking points: yellow = **10**, red = **25**, one player max **35**. Cards shown
-after the final whistle, and cards for non-players (bench, manager, substituted players), do
-not count; a card shown during the half-time break counts in the second half. Markets: Total
+**Bookings** counting, from the manual — as a table, the way the book itself counts:
+
+| Card event | Counts as cards | Booking points |
+|---|---|---|
+| Yellow card | 1 | 10 |
+| Red card (straight, or second-yellow red) | 2 | 25 |
+| The second yellow itself | Not double-counted | — |
+| **Maximum one player can cause** | **3 cards** | **35 points** |
+
+Cards shown after the final whistle, and cards for non-players (bench, manager, substituted
+players), do not count; a card shown during the half-time break counts in the second half. Markets: Total
 Bookings (cards) Over/Under, Booking Points Over/Under, Bookings 1X2, 1st Booking (Home / None
 / Away), Exact Bookings, Sending Off (per team too), booking handicaps — plus half and interval
 versions.
