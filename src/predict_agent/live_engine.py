@@ -268,7 +268,7 @@ def check(threshold: float = 0.15) -> list[str]:
                             strengths[code] = football_strengths(code)
                         except Exception:
                             continue
-                    avgs, xg, elo = strengths[code]
+                    avgs, xg, elo, _rows = strengths[code]
                     got, _err = football_prediction(fx["home"], fx["away"], avgs, xg, elo)
                     if not got:
                         continue
