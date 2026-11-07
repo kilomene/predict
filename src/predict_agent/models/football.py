@@ -136,8 +136,8 @@ def match_stats(home: dict, away: dict, referee: dict | None = None) -> dict:
 
 def predict(lam_home: float, lam_away: float, elo_home_prob: float | None = None,
             home_stats: dict | None = None, away_stats: dict | None = None,
-            referee: dict | None = None) -> dict:
-    m = score_matrix(lam_home, lam_away)
+            referee: dict | None = None, rho: float = -0.08) -> dict:
+    m = score_matrix(lam_home, lam_away, rho=rho)
     mk = markets_from_matrix(m)
     if elo_home_prob is not None:
         mk = blend_with_elo(mk, elo_home_prob)
