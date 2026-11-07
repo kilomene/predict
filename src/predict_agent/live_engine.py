@@ -13,8 +13,12 @@ Modes:
   watch   Loop `check`-style snapshots in the terminal every N seconds.
 
 Football method: remaining-goals Poisson/Dixon-Coles matrix.
-  remaining_lambda = pre-match lambda x remaining-time fraction (of 94')
-  adjusted for red cards (x0.60 self / x1.30 opponent, per card),
+  v2.0: remaining_lambda = pre-match lambda x REMAINING GOAL SHARE from the
+  fitted goal-intensity curve (early_goals.GOAL_SHARE_CDF: only ~12.8% of
+  goals arrive by 15', ~44% by half-time — scoring is back-loaded, so the
+  old linear clock mispriced both ends of the match). model="linear" keeps
+  the v0.3 clock for A/B comparison.
+  Adjusted for red cards (x0.60 self / x1.30 opponent, per card),
   score state (trailing team +10%, leading team -8% — documented heuristic),
   and live xG momentum when supplied (observed xG rate vs expected, clamped).
 Basketball: remaining-points Normal model. Tennis: exact game-state DP for
@@ -35,10 +39,16 @@ RED_SELF, RED_OPP = 0.60, 1.30
 # ---------------- FOOTBALL ----------------
 def football_live(lam_h: float, lam_a: float, minute: float, score_h: int, score_a: int,
                   red_h: int = 0, red_a: int = 0,
-                  xg_h: float | None = None, xg_a: float | None = None) -> dict:
+                  xg_h: float | None = None, xg_a: float | None = None,
+                  model: str = "intensity") -> dict:
     minute = min(max(minute, 0.0), TOTAL_MINUTES)
-    remain_frac = max(0.0, (TOTAL_MINUTES - minute) / TOTAL_MINUTES)
-    elapsed_frac = minute / TOTAL_MINUTES
+    if model == "intensity":
+        from predict_agent.early_goals import share_by
+        elapsed_frac = share_by(minute)          # share of goals expected by now
+        remain_frac = max(0.0, 1.0 - elapsed_frac)
+    else:  # v0.3 linear clock, kept for A/B
+        remain_frac = max(0.0, (TOTAL_MINUTES - minute) / TOTAL_MINUTES)
+        elapsed_frac = minute / TOTAL_MINUTES
     rem_h, rem_a = lam_h * remain_frac, lam_a * remain_frac
     rem_h *= (RED_SELF ** red_h) * (RED_OPP ** red_a)
     rem_a *= (RED_SELF ** red_a) * (RED_OPP ** red_h)
