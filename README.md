@@ -131,3 +131,21 @@ Bookmaker availability and legality vary by country — SportyBet/Bet9ja serve N
 ## License
 
 MIT
+
+## Live in-play engine + ML ensemble + auto props (v0.3)
+
+- **Live engine** (`predict_agent.live_engine`): re-prices matches in play —
+  football remaining-goals Poisson matrix with red-card, score-state and
+  live-xG adjustments; basketball remaining-points Normal; tennis exact
+  game-state DP; volleyball rally Monte Carlo. `check` mode watches the
+  prediction ledger and alerts on >=15-point win-prob swings and full-time
+  verdicts.
+- **ML ensemble** (`predict_agent.ml`): gradient boosting + multinomial
+  logistic regression on leakage-free rolling features (Elo, form, xG form,
+  shots, rest). Validation on the full 2025/26 big-5 season (1,607 matches):
+  Poisson 48.1% / log-loss 1.0505 → **ML 50.1% / 1.0177 → ensemble 50.2% /
+  1.0169**. The ensemble only runs because it beat the statistical model.
+- **Auto player props** (`predict_agent.props_auto`): Premier League props
+  built automatically from the official FPL API (real xG/xA per 90, penalty
+  takers). Shots figures are xG-derived estimates and labelled as such.
+- **Horizon**: `daily --days 3` predicts today, tomorrow and the day after.
