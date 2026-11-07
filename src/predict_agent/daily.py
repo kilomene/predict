@@ -204,7 +204,7 @@ def football_strengths(code: str):
             xg[t] = {"xg_for": xf / g, "xg_against": xa / g, "games": g}
     return avgs, xg, elo, rows
 
-def football_prediction(home_espn: str, away_espn: str, avgs, xg, elo):
+def football_prediction(home_espn: str, away_espn: str, avgs, xg, elo, rho: float = -0.08):
     h = match_team(home_espn, avgs)
     a = match_team(away_espn, avgs)
     if not h or not a:
@@ -234,7 +234,7 @@ def football_prediction(home_espn: str, away_espn: str, avgs, xg, elo):
                 "offsides": v.get("offsides", 1.8)}
     pred = football.predict(round(lam_h, 3), round(lam_a, 3),
                             elo_home_prob=elo.win_prob(h, a),
-                            home_stats=stats(h), away_stats=stats(a))
+                            home_stats=stats(h), away_stats=stats(a), rho=rho)
     return (pred, conf, h, a), None
 
 # ---------------- MoviOdds (bet365) Full Time Result odds ----------------
@@ -290,7 +290,7 @@ def lookup_odds(index: dict, name_pairs: list[tuple[str, str]]):
     return None
 
 # ---------------- per-date generation ----------------
-def gen_date(day, ledger, record, state, strengths, odds_index, ensemble, rolling):
+def gen_date(day, ledger, record, state, strengths, odds_index, ensemble, rolling, v2=None):
     ymd = day.strftime("%Y%m%d")
     lines = [f"# Predict — daily picks for {day.isoformat()}", ""]
     picks_json = {"date": day.isoformat(), "generated_tz": "America/Chicago", "fixtures": []}
@@ -317,7 +317,8 @@ def gen_date(day, ledger, record, state, strengths, odds_index, ensemble, rollin
         avgs, xg, elo, rows = strengths[code]
         lines.append(f"### {display}")
         for fx in events:
-            got, err = football_prediction(fx["home"], fx["away"], avgs, xg, elo)
+            rho = (v2 or {}).get("rho", {}).get(code, -0.08)
+            got, err = football_prediction(fx["home"], fx["away"], avgs, xg, elo, rho=rho)
             if not got:
                 lines.append(f"- {fx['home']} vs {fx['away']} — skipped: {err}")
                 continue
@@ -340,12 +341,30 @@ def gen_date(day, ledger, record, state, strengths, odds_index, ensemble, rollin
                     conf += " + ML ensemble"
                 except Exception:
                     ml_info = None
+            # v2.0: calibrate the blended 1X2, then let the gate decide the call.
+            call = None
+            if v2 and code in v2.get("calibration", {}):
+                from predict_agent import calibration as _cal, gating as _gate
+                raw = (mk["home_win"], mk["draw"], mk["away_win"])
+                cprobs = _cal.apply_vector_scaling(raw, v2["calibration"][code])
+                mk["home_win"], mk["draw"], mk["away_win"] = cprobs
+                mk["probs_raw"] = raw
+                call = _gate.decide(cprobs, v2.get("gate"))
+                conf += " · v2 calibrated"
             pick = max((mk["home_win"], "H"), (mk["draw"], "D"), (mk["away_win"], "A"))
             tops = ", ".join(f"{t['score']} ({t['prob']:.0%})" for t in mk["top_correct_scores"][:3])
+            if call and call["type"] == "SINGLE":
+                call_txt = f"call: SINGLE {call['label']} ({call['top_prob']:.0%})"
+            elif call and call["type"] == "DOUBLE_CHANCE":
+                call_txt = f"call: DOUBLE CHANCE {call['selection']} — {call['label']}"
+            elif call:
+                call_txt = "call: NO PICK — too close to call"
+            else:
+                call_txt = (f"pick: {'Home' if pick[1]=='H' else 'Draw' if pick[1]=='D' else 'Away'} "
+                            f"({pick[0]:.0%})")
             lines.append(
-                f"- **{fx['home']} vs {fx['away']}** — pick: "
-                f"{'Home' if pick[1]=='H' else 'Draw' if pick[1]=='D' else 'Away'} "
-                f"({pick[0]:.0%}) · 1X2 {mk['home_win']:.0%}/{mk['draw']:.0%}/{mk['away_win']:.0%} · "
+                f"- **{fx['home']} vs {fx['away']}** — {call_txt} · "
+                f"1X2 {mk['home_win']:.0%}/{mk['draw']:.0%}/{mk['away_win']:.0%} · "
                 f"scores: {tops} · Over 2.5 {mk['over_2_5']:.0%} · BTTS {mk['btts_yes']:.0%} · "
                 f"xG {pred['lambda_home']:.2f}–{pred['lambda_away']:.2f} · conf {conf}")
             ms = pred.get("match_stats") or {}
@@ -387,6 +406,12 @@ def gen_date(day, ledger, record, state, strengths, odds_index, ensemble, rollin
                      "top_score": mk["top_correct_scores"][0], "settled": False}
             if ml_info:
                 entry["ml"] = ml_info
+            if call:
+                entry["call"] = call
+                if "probs_raw" in mk:
+                    entry["probs_raw"] = {"H": round(mk["probs_raw"][0], 4),
+                                          "D": round(mk["probs_raw"][1], 4),
+                                          "A": round(mk["probs_raw"][2], 4)}
             if odds:
                 va = {"H": assess(mk["home_win"], odds[0]),
                       "D": assess(mk["draw"], odds[1]),
@@ -415,8 +440,30 @@ def gen_date(day, ledger, record, state, strengths, odds_index, ensemble, rollin
         for fx in rows_out:
             rh, ra = tab.get(fx["home"], 1500.0), tab.get(fx["away"], 1500.0)
             if sport == "basketball":
-                p = basketball.predict(110 + (rh - ra) / 25.0, 110 - (rh - ra) / 25.0,
-                                       elo_home_prob=expected_score(rh, ra, 100))
+                # v2.0: real possessions model (pace/ORtg/DRtg from ESPN team
+                # stats) when ratings are available; the old 110±Elo dummy is
+                # only a labelled fallback now, never the silent default.
+                exp = None
+                try:
+                    from predict_agent.models import basketball_ratings
+                    global _NBA_RATINGS
+                    if "_NBA_RATINGS" not in globals():
+                        _NBA_RATINGS = basketball_ratings.build_ratings()
+                    if _NBA_RATINGS:
+                        by_norm = {norm(k): k for k in _NBA_RATINGS if not k.startswith("_")}
+                        hk = by_norm.get(norm(fx["home"])); ak = by_norm.get(norm(fx["away"]))
+                        if hk and ak:
+                            exp = basketball_ratings.expected_points(hk, ak, _NBA_RATINGS)
+                except Exception:
+                    exp = None
+                if exp:
+                    p = basketball.predict(exp[0], exp[1],
+                                           elo_home_prob=expected_score(rh, ra, 100))
+                    conf = "MEDIUM (possessions model: pace/ORtg/DRtg)"
+                else:
+                    p = basketball.predict(110 + (rh - ra) / 25.0, 110 - (rh - ra) / 25.0,
+                                           elo_home_prob=expected_score(rh, ra, 100))
+                    conf = "LOW (Elo fallback — ratings unavailable)"
                 ph = p["home_win_prob"]
                 extra = f" · expected total {p['expected_total']:.0f}"
             else:
@@ -476,11 +523,17 @@ def main():
         ensemble = None
 
     odds_index = moviodds_1x2_index("soccer", run_date=start, window_days=max(2, args.days + 1))
+    v2 = None
+    try:
+        from predict_agent.calibration import load_params
+        v2 = load_params(os.path.join(OUT, "v2_params.json"))
+    except Exception:
+        v2 = None
     strengths: dict = {}
     total = 0
     for day in days:
         lines, picks_json = gen_date(day, ledger, record, state, strengths,
-                                     odds_index, ensemble, rolling)
+                                     odds_index, ensemble, rolling, v2=v2)
         total += len(picks_json["fixtures"])
         md_path = os.path.join(OUT, f"picks-{day.isoformat()}.md")
         open(md_path, "w").write("\n".join(lines) + "\n")
