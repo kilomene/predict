@@ -18,3 +18,4 @@ where = ["src"]
 predict = "predict_agent.predict:main"
 predict-backtest = "predict_agent.backtest:main"
 predict-today = "predict_agent.today:main"
+predict-daily = "predict_agent.daily:main"
