@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "predict-agent"
+version = "0.2.0"
+description = "Multi-sport prediction agent: football, basketball, tennis, volleyball — with correct score, player props, shots, fouls, cards and value betting"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+dependencies = ["requests>=2.32", "pyyaml>=6.0", "python-dotenv>=1.0"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[project.scripts]
+predict = "predict_agent.predict:main"
+predict-backtest = "predict_agent.backtest:main"
+predict-today = "predict_agent.today:main"
