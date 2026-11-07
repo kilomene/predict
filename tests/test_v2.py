@@ -71,6 +71,29 @@ def test_pi_ratings_learn_and_damp():
     one.update("A", "B", 1, 0); six.update("A", "B", 6, 0)
     assert 0 < six.get_home("A") < 6 * one.get_home("A")
 
+def test_live_intensity_curve():
+    import sys
+    sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
+    from predict_agent.live_engine import football_live
+    # minute 0: intensity ~= pre-match (full lambda remains)
+    r0 = football_live(1.9, 1.1, 0, 0, 0)
+    assert r0["remaining_xg"]["home"] == 1.9
+    # half-time: intensity keeps MORE remaining than the linear clock
+    # (goals are back-loaded: 56% of goals still to come at 45')
+    ri = football_live(1.9, 1.1, 45, 0, 0, model="intensity")
+    rl = football_live(1.9, 1.1, 45, 0, 0, model="linear")
+    assert ri["remaining_xg"]["home"] > rl["remaining_xg"]["home"]
+    # late game: a 2-0 lead at 89' is safer under intensity (fewer goals left)
+    late_i = football_live(1.9, 1.1, 89, 2, 0, model="intensity")
+    assert late_i["home_win"] > 0.95
+    # monotonic: remaining xG never rises with time
+    prev = 99.0
+    for mnt in (0, 15, 30, 45, 60, 75, 90):
+        r = football_live(1.9, 1.1, mnt, 0, 0)
+        assert r["remaining_xg"]["home"] <= prev + 1e-9
+        prev = r["remaining_xg"]["home"]
+
+
 if __name__ == "__main__":
     for name, fn in sorted(dict(globals()).items()):
         if name.startswith("test_"):
