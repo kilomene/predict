@@ -1,0 +1,161 @@
+# Predict — source catalogue
+# Every source the agent uses or links to. api: official/permitted route exists.
+# link_only: no public API — we deep-link and compare manually, we do NOT scrape against ToS.
+
+live_scores:
+  - name: LiveScore
+    url: https://www.livescore.com
+    sports: [football, basketball, tennis, volleyball]
+    mode: link_only
+  - name: Flashscore
+    url: https://www.flashscore.com
+    sports: [football, basketball, tennis, volleyball]
+    mode: link_only
+  - name: Sofascore
+    url: https://www.sofascore.com
+    sports: [football, basketball, tennis, volleyball]
+    mode: link_only
+    note: Unofficial API exists; respect ToS and rate limits if used.
+  - name: FotMob
+    url: https://www.fotmob.com
+    sports: [football]
+    mode: link_only
+  - name: BBC Sport
+    url: https://www.bbc.com/sport
+    sports: [football, basketball, tennis]
+    mode: link_only
+  - name: ESPN
+    url: https://www.espn.com
+    sports: [football, basketball, tennis, volleyball]
+    mode: api
+    note: Unofficial JSON endpoints (site.api.espn.com), free, no key.
+
+data_apis:
+  - name: football-data.co.uk
+    url: https://www.football-data.co.uk/data.php
+    sports: [football]
+    mode: api
+    free: "CSV download, no key"
+    gives: Historical results + Bet365/Pinnacle closing odds — training & backtest gold
+  - name: football-data.org
+    url: https://www.football-data.org
+    sports: [football]
+    mode: api
+    free: "12 competitions, 10 calls/min; live scores are paid (€12/mo)"
+    env: FOOTBALL_DATA_ORG_KEY
+  - name: API-Sports / API-Football
+    url: https://api-sports.io
+    sports: [football, basketball, volleyball, tennis-via-other]
+    mode: api
+    free: "100 requests/day per sport API, all endpoints"
+    env: API_SPORTS_KEY
+    note: Separate APIs per sport — api-football, api-basketball, api-volleyball share one account.
+  - name: The Odds API
+    url: https://the-odds-api.com
+    sports: [football, basketball, tennis]
+    mode: api
+    free: "500 credits/month, 40+ bookmakers"
+    env: THE_ODDS_API_KEY
+  - name: MoviOdds
+    url: https://moviodds.com
+    sports: [football, basketball, tennis, volleyball]
+    mode: api
+    free: "Free, no key (beta) — bet365 odds only, REST + WebSocket"
+    note: GET https://moviodds.com/odds?sport=soccer|basketball|tennis|volleyball
+  - name: Sportmonks
+    url: https://www.sportmonks.com
+    sports: [football]
+    mode: api
+    free: "Free plan: 2 leagues"
+    env: SPORTMONKS_KEY
+  - name: TheSportsDB
+    url: https://www.thesportsdb.com
+    sports: [football, basketball, tennis, volleyball]
+    mode: api
+    free: "Free basic tier"
+    env: THESPORTSDB_KEY
+
+bookmakers:
+  # User-requested. No public APIs — link + odds-comparison mapping only.
+  - name: SportyBet
+    url: https://www.sportybet.com
+    region: Nigeria / Ghana / Kenya and others
+    mode: link_only
+  - name: Bet9ja
+    url: https://www.bet9ja.com
+    region: Nigeria
+    mode: link_only
+    note: Listed by the user as "bet naija".
+  - name: 1xBet
+    url: https://1xbet.com
+    region: Varies by licence — verify locally
+    mode: link_only
+  - name: Football.com
+    url: https://www.football.com
+    region: Nigeria and others
+    mode: link_only
+  - name: bet365
+    url: https://www.bet365.com
+    mode: link_only
+    note: Odds reachable programmatically via MoviOdds (above).
+  - name: Pinnacle
+    url: https://www.pinnacle.com
+    mode: link_only
+    note: Sharp benchmark — closing Pinnacle odds are the market-truth reference for backtests.
+
+advanced_stats_and_context:
+  # Extra-miles sources: xG, player per-90s, injuries, lineups, referees, Elo
+  - name: FBref
+    url: https://fbref.com
+    gives: xG, xA, shots, shot-creating actions, per-90 player history (archive; advanced Opta feed changed Jan 2026)
+    mode: link_only
+  - name: Understat
+    url: https://understat.com
+    gives: xG for the big-5 European leagues, shot maps
+    mode: link_only
+  - name: WhoScored
+    url: https://www.whoscored.com
+    gives: Player ratings, team characteristics, predicted lineups
+    mode: link_only
+  - name: Sofascore (stats layer)
+    url: https://www.sofascore.com
+    gives: Live xG, lineups, injuries/suspensions, player ratings, heatmaps
+    mode: link_only
+  - name: Transfermarkt
+    url: https://www.transfermarkt.com
+    gives: Injuries, suspensions, squad depth, market values
+    mode: link_only
+  - name: ClubElo
+    url: http://clubelo.com
+    gives: Free Elo ratings for European club football
+    mode: api
+  - name: StatsBomb Open Data
+    url: https://github.com/statsbomb/open-data
+    gives: Free full event data (every shot/pass/pressure) for selected competitions
+    mode: api
+  - name: Forebet
+    url: https://www.forebet.com
+    gives: Established mathematical predictions — a benchmark to compare against, not copy
+    mode: link_only
+  - name: FootyStats
+    url: https://footystats.org
+    gives: Referee cards/fouls per game, team stat tables, player props research
+    mode: link_only
+  - name: FootyMetrics
+    url: https://footymetrics.com
+    gives: Player + team + referee data with live odds, 115+ leagues
+    mode: link_only
+  - name: Fantasy Premier League API
+    url: https://fantasy.premierleague.com/api/bootstrap-static/
+    gives: PL player minutes, goals, assists, prices, news — free, no key (PL only)
+    mode: api
+  - name: Premier League referees
+    url: https://www.premierleague.com/referees
+    gives: Official referee appointments (cards/fouls model input)
+    mode: link_only
+prediction_benchmarks:
+  - name: FiveThirtyEight (archived SPI)
+    note: Classic Elo/SPI methodology reference for football and tennis Elo design
+  - name: TACTIX methodology
+    url: https://tactix.football/methodology
+    note: Calibration-first benchmark — model rated on calibration error, market-sanity gate idea adopted here
