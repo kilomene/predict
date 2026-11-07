@@ -94,6 +94,10 @@ python -m predict_agent.backtest --league E0 --season 2324
 
 # Today's fixtures + live-score links for all 4 sports
 python -m predict_agent.today
+
+# THE DAILY RUNNER (what the morning cron runs)
+python -m predict_agent.daily            # settles yesterday, predicts today
+# -> out/picks-YYYY-MM-DD.md (sheet) + out/ledger.json (every pick, graded daily)
 ```
 
 ## Project layout
