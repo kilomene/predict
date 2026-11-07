@@ -7,7 +7,9 @@ manuals read completely (football.com "How to Play — Football" and the SportyB
 football manual — the same document family, near word-for-word), plus a live market catalogue
 of Arsenal vs Hull City (Premier League, in-play) and a pre-match catalogue of Parma vs Bologna
 (Serie A). The source manuals are archived in `docs/manuals/`. This handbook is written in our
-own words from that study; where the manuals are silent, it says so.*
+own words from that study; where the manuals are silent, it says so. Coverage is A–Z: §16
+indexes **every market heading in both manuals** (268 headings, machine-checked against the
+manual texts), and the manuals' own settlement tables are carried in full in §4 and §6.*
 
 ---
 
@@ -82,6 +84,12 @@ How each door works:
 - **League/feed dependence:** minute markets are not universal. A live Botola Pro match
   observed the same day (Kawkab vs Wydad) had an empty Minutes tab and no interval markets
   at all. Always confirm the family exists on the specific match before planning a play.
+- **Injury time at interval boundaries (manual, Interval Markets):** for the intervals that
+  run into a half's end — 41–45, 31–40, 31–45 — events (goals, corners) scored in added
+  injury/stoppage time **count inside that interval**. Interval timing always follows the
+  event definitions of Law 2: goals by ball-crossing time, corners by taken time, bookings
+  by card-shown time, offsides and penalties by the referee's decision (VAR included).
+  A penalty **awarded but not taken** is not considered.
 - Pre-match, the Minutes tab holds exactly **two** markets: the first-goal interval markets
   of §5. Nothing else. Any plan that needs a window market is a live-betting plan.
 
@@ -176,8 +184,17 @@ Related goal-timing markets:
   states that if the named goal is never scored, those bets are void — a different treatment
   from a None selection, so do not blend the two in your head.
 - **Next Goal / Last Goal:** which team scores the Nth / the last goal of the match.
-- **Next Scoring Type:** the *kind* of the next goal — free kick, penalty, header, own goal,
-  other, or No Goal.
+- **Next Scoring Type:** the *kind* of the next goal. The manual defines each type exactly,
+  and two of the definitions surprise:
+
+| Scoring type | The manual's test |
+|---|---|
+| Free kick | Scored **directly** from a free kick **or a corner**; a deflected shot still counts if the taker is awarded the goal |
+| Penalty | Scored **directly** from the penalty — a goal from the **rebound of a missed penalty does not count** |
+| Own goal | The goal is declared an own goal |
+| Header | The scorer's **last touch** is with the head |
+| Shot | Any other body part, where none of the above apply |
+| No Goal | No further goal is scored |
 
 ## 6. The core result markets
 
@@ -322,9 +339,18 @@ versions.
 
 ## 9. Player markets
 
-All player markets settle on **Opta** definitions (a "shot on target" includes a goal-line or
-woodwork contact per Opta; a shot blocked by another outfield player is not a shot at all, and
-so on).
+All player markets settle on **Opta** definitions. The manuals spell out exactly what each
+statistic counts — this is the ground truth every player line settles on:
+
+| Statistic | Counts | Does **not** count |
+|---|---|---|
+| **Player Total Shots** | Any clear attempt to score: on target, off target, blocked (by anyone), off the woodwork; any legal body part | Set-piece attempts with no clear scoring intent that don't directly produce a goal (e.g. a crossed corner); cross-cum-shots / flick-ons with no clear intent |
+| **Player Total Shots On Goal** | Attempts that score (whatever the intent); clear attempts that would have gone in but for a goalkeeper save or a **last-man** stop; woodwork shots that go straight in | Blocked shots by anyone other than the last man; woodwork shots that stay out; no-intent set pieces / crosses as above |
+| **Player Total Passes** | Attempted passes (completed or not) with clear intention to find a teammate, incl. short-played goal kicks, free kicks and corners | Crosses, throw-ins, goalkeeper throws |
+| **Player Tackles** | Ground challenges where the player connects with the ball and takes it from a player clearly in possession — whatever the outcome (possession won, ball out, ball to an opponent) | Missed/failed tackle attempts, aerial duels, fouls, interceptions |
+| **Player Assists** | The final contribution (pass, shot, any touch) that leads directly to the receiving teammate's goal | Deflected contributions the recipient was unlikely to reach without the deflection; assists on own goals, penalties, direct corners, direct free kicks. **Pre-assists never count** (MLS rule stated in the manual: the pass before the assist is not an official assist and is ignored) |
+| **Player Saves** | Every goalkeeper interception of a shot on goal | — |
+| **Player Goals** | Goals in the opposition net | An off-target attempt deflected in off an opponent (an own goal) |
 
 - **Participation rule:** if the player takes any part in the match, the bet stands — starter
   or substitute, however few minutes.
@@ -405,6 +431,277 @@ tab's two first-goal interval markets.
    rules otherwise for that bet.
 4. Every result — right or wrong — is settled into the Predict ledger and graded the next
    morning; the ratings learn from all of it.
+
+## 15. Cup markets — overtime and penalty shootouts
+
+Everything in §§1–14 settles on regular time. Knockout football adds two more universes, and
+the manuals give each its own full market set. These exist only in matches that allow them
+(cups); none of them touch a regular-time bet.
+
+**Qualification markets:**
+
+| Market | Meaning |
+|---|---|
+| **To Qualify** | Which team advances to the next round — by whatever method the tie produces |
+| **Will There Be Overtime** | Whether extra time is played at all |
+| **Winning Method** | The winning team **and** how they win it; in a multi-leg tie the combined result of all legs is used |
+| **Overtime & Goal** | Yes = there is overtime **and** a goal in it; No = no overtime, or overtime without a goal |
+
+**Overtime markets** (settled only on the extra-time period itself):
+
+| Market | Meaning |
+|---|---|
+| Overtime – 1X2 | Winner of the overtime period |
+| Overtime – Handicap | Overtime result with the handicap applied |
+| Overtime – Over/Under | Total overtime goals vs a line (settles on the §4 grid) |
+| Overtime – Nth Goal | Which team scores the Nth overtime goal |
+| Overtime – Correct Score | Exact overtime score |
+| Overtime – Which Team Will Win the Rest | From the moment of betting, only later overtime goals count |
+| Overtime 1st Half – 1X2 / Overtime 1st Half – Handicap / Overtime 1st Half – Correct Score | The same three ideas scoped to the first half of overtime |
+
+**Penalty shootout markets** (settled only on the shootout):
+
+| Market | Meaning |
+|---|---|
+| Penalty Shootout – Winner | Which team wins the shootout |
+| Penalty Shootout – Winner & Over/Under | Shootout winner **and** total shootout goals vs a line |
+| Penalty Shootout – Winning Margin | By how many goals the shootout is won |
+| Penalty Shootout – Over/Under | Total shootout goals vs a line |
+| Penalty Shootout – Exact Goals | Exact total of shootout goals |
+| Penalty Shootout – Odd/Even | Total shootout goals odd or even |
+| Penalty Shootout – Nth Penalty Scored | Whether the Nth penalty is scored |
+| Penalty Shootout – Nth Goal | Which team scores the Nth shootout goal |
+| Penalty Shootout – Home Over/Under / Penalty Shootout – Away Over/Under | One team's shootout goals vs a line |
+| Penalty Shootout – Home Odd/Even / Penalty Shootout – Away Odd/Even | One team's shootout goals odd or even (no goals = even) |
+| Penalty Shootout – Correct Score | Exact shootout score |
+| Nth Penalty Scored (match market) | Whether the Nth in-match penalty is scored — a different market from the shootout version above |
+
+## 16. The A–Z index — every market in the manuals
+
+Every market heading carried in the two manuals (SportyBet Nigeria + football.com — the same
+document family), grouped by family, one line each. If a market exists in the book, it is
+here; the sections above give the deep settlement rules for the families that have them.
+Pattern variants (Home/Away, 1st/2nd half, interval versions) are named in full.
+
+### Result markets
+
+| Market | You are predicting |
+|---|---|
+| 1X2 | Home / Draw / Away in regular time |
+| 1X2 – 1UP / 2UP | Your team paid as winner the moment it leads by 1 / by 2 (see §6); team versions: Home team 1UP, Home team 2UP, Home team 3UP, Away team 1UP, Away team 2UP, Away team 3UP, Any team 3UP |
+| 1X2 – Never Down | Your team wins without ever trailing (see §6) |
+| Double Chance | Two of the three results in one pick: 1X, 12, X2 |
+| Double Chance 1UP | Double Chance paid early the moment your team leads at any point; otherwise settles as a normal Double Chance |
+| Draw No Bet | Match winner; a draw voids |
+| Home No Bet | Match result; a home win voids |
+| Away No Bet | Match result; an away win voids |
+| Handicap (European, 3-way) | Winner after the bracketed goal start is added to a team's score |
+| Asian Handicap | Winner against a split-capable handicap (full table in §6) |
+| Half Time/Full Time | The result at half-time **and** at full-time, one selection |
+| Half Time/Full Time Correct Score | The correct score at half-time **and** at full-time |
+| Rest Match Winner | The result from the moment of betting — the score restarts 0–0 |
+| To Qualify | Which team advances (see §15) |
+| Winning Method | Winning team and method (see §15) |
+| Winning Margin | The exact goal difference of the win |
+| Nth Goal & 1X2 | Which team scores the Nth goal **and** who wins the match |
+
+### Goal totals
+
+| Market | You are predicting |
+|---|---|
+| Over/Under | Total goals vs a line (full settlement table in §4) |
+| Home Team Over/Under / Away Team Over/Under | One team's total goals vs a line |
+| Exact Goals | The exact total goals (0, 1, 2, 3, 4, 5+) |
+| Home Team Exact Goals / Away Team Exact Goals | One team's exact total |
+| Multigoals | How many goals will be scored, in the book's bands |
+| Home Multigoals / Away Multigoals | One team's goal band |
+| Multiscores | The final score, chosen from grouped scorelines |
+| Goal Range | Total goals inside a chosen range |
+| Goal bounds / Goal bounds - Home / Goal bounds - Away / Goal bounds - 1st Half | Total goals of the named scope fall inside a set goal range |
+| Excluded goals / Excluded goals - Home / Excluded goals - Away / Excluded goals - 1st Half | A bet **against** a specific number of goals — that exact total must not happen |
+| Odd/Even | Total goals odd or even; no goals counts as even |
+| Home Team Odd/Even / Away Team Odd/Even | One team's goals odd or even (0 = even) |
+| Both Halves Over x.5 | Goals in **each** half finish over the given line |
+| Both Halves Under x.5 | Goals in **each** half finish under the given line |
+
+### Scoring, teams and clean sheets
+
+| Market | You are predicting |
+|---|---|
+| GG/NG | Both teams score (GG) or at least one doesn't (NG) — see §6 |
+| 1st/2nd Half GG/NG | GG/NG scoped to the named half |
+| Teams to Score | Which team(s) will score: home only, away only, both, neither |
+| Home Team Clean Sheet / Away Team Clean Sheet | The named team concedes nothing |
+| Home Team to Win to Nill / Away Team to Win to Nill | The named team wins **and** keeps a clean sheet (manual spelling) |
+| Win to Nil | A team wins and concedes nothing (see §6) |
+| Home Team to Score Both Halves / Away Team to Score Both Halves | The named team scores at least once in each half |
+| 1st Goal | Which team scores the match's first goal — or None (see §5) |
+| Next Goal | Which team scores the Nth goal |
+| Last Goal | Which team scores the match's last goal |
+| Next Scoring Type | The kind of the next goal (full definitions in §5) |
+| Correct Score | The exact full-time score |
+
+### Goal timing and intervals
+
+| Market | You are predicting |
+|---|---|
+| When Will the Nth Goal Be Scored (10 min interval) | The 10-minute interval in which the Nth goal lands |
+| When will the 1st goal be scored (10 / 15 min interval) | The interval of the first goal — or None = a goalless match (see §5) |
+| 5/10/15 minutes – 1X2 from a to b | The result inside that minute window (see §3) |
+| 1X2 – Intervals of 10 Minutes | The cumulative 1X2 from minute 1 to each 10-minute boundary (see §3) |
+| 5/10/15 minutes – Nth Goal from a to b | Which team scores the Nth goal inside the window (or None) |
+| 5/10/15 minutes – Over/Under from a to b | Total goals inside the window vs a line — Under 0.5 = the no-goal play (see §3) |
+| Total Goals Over/Under from 1 to X minute | Cumulative goals by minute X vs a line (live only, see §3) |
+| 1 minute – Over/Under from a to b | Total goals inside a single named minute vs a line |
+| 1 minute – Over/Under Corners from a to b | Corners inside one minute vs a line |
+| 1 minute – Over/Under Bookings from a to b | Bookings inside one minute vs a line |
+| 1 minute – Over/Under Offsides from a to b | Offsides inside one minute vs a line |
+| 1 minute – Over/Under Penalties from a to b | Penalties inside one minute vs a line |
+
+### Halves
+
+| Market | You are predicting |
+|---|---|
+| 1st Half – 1X2 / 2nd Half – 1X2 | The named half's result, on that half's goals only |
+| 1st Half – Double Chance / 2nd Half – Double Chance | Double Chance within the half |
+| 1st Half – Draw No Bet / 2nd Half – Draw No Bet | Half winner; a drawn half voids |
+| 1st Half – Handicap / 2nd Half – Handicap | Half winner with the bracketed start |
+| 1st Half – Over/Under / 2nd Half – Over/Under | Total half goals vs a line |
+| 1st Half – Home Team Over/Under / 1st Half – Away Team Over/Under | One team's 1st-half goals vs a line |
+| 2nd Half – Home Team Over/Under / 2nd Half – Away Team Over/Under | One team's 2nd-half goals vs a line |
+| 1st Half – Exact Goals / 2nd Half – Exact Goals | Exact goals in the half |
+| 1st Half – Home Team Exact Goals / 1st Half – Away Team Exact Goals | One team's exact 1st-half goals |
+| 1st Half – Correct Score / 2nd Half – Correct Score | Exact score of the half |
+| 1st Half – Multigoals / 2nd Half – Multigoals | Goal band of the half |
+| 1st half – Odd/Even / 2nd Half – Odd/Even | Half goals odd or even (0 = even) |
+| 1st Half – GG/NG / 2nd half – GG/NG | Both teams score inside the half |
+| 1st half – Home Team Clean Sheet / 1st half – Away Team Clean Sheet | Clean sheet in the 1st half |
+| 2nd Half – Home Team Clean Sheet / 2nd Half – Away Team Clean Sheet | Clean sheet in the 2nd half |
+| 1st Half – Which Team Will Win the Rest | The rest of the 1st half from the moment of betting, score restarted |
+| 1st Half – Nth Goal / 2nd Half – Nth Goal | Which team scores the Nth goal of the half |
+| Home Team to Win Both Halves / Away Team to Win Both Halves | The named team outscores the opponent in **both** halves |
+| Home Team to Win Either Half / Away Team to Win Either Half | The named team wins at least one half |
+| Highest Scoring Half | Which half produces more goals (1st / 2nd / equal) |
+| Home Team Highest Scoring Half / Away Team Highest Scoring Half | The half in which the named team scores most |
+
+### Corners
+
+| Market | You are predicting |
+|---|---|
+| Corners – 1X2 | Which team takes more corners (corners count when taken — §8) |
+| Nth Corner / Last Corner | Which team takes the Nth / the last corner |
+| Corner Handicap | Most corners with the bracketed start |
+| Corners – Over/Under | Total corners vs a line |
+| Home Team Corners – Over/Under / Away Team Corners – Over/Under | One team's corners vs a line |
+| Corner Range / Home Team Corner Range / Away Team Corner Range | Corners fall inside a range (match or one team) |
+| Odd/Even Corners | Total corners odd or even (0 = even) |
+| Race to X Corners | Which team reaches X corners first |
+| 1st Half – Corner 1X2 / 1st Half – Nth Corner / 1st Half – Last Corner / 1st Half – Corner Handicap | The corner markets scoped to the 1st half |
+| 1st Half Corners – Over/Under / 1st Half – Home Corners Over/Under / 1st Half – Away Corners Over/Under | Corner totals vs lines, 1st half |
+| 1st Half – Home Exact Corners / 1st Half – Away Exact Corners | One team's exact 1st-half corners |
+| 1st Half – Corner Range / 1st Half – Odd/Even Corners | Range / odd-even of 1st-half corners |
+| 1st Half – Race to X Corners | First to X corners inside the 1st half |
+| 5/10/15 minutes – Corners 1X2 from a to b | Most corners inside the window |
+| 5/10/15 minutes – Xth Corner from a to b | Which team takes the Xth corner inside the window |
+| 5/10/15 minutes – Corner Handicap from a to b | Window corner winner with a start |
+| 5/10/15 minutes – Corners – Over/Under from a to b | Window corner total vs a line |
+| 5/10/15 minutes – Home Corners – Over/Under from a to b / 5/10/15 minutes – Away Corners – Over/Under from a to b | One team's window corners vs a line |
+| 5/10/15 minutes – Odd/Even Corners from a to b | Window corners odd or even |
+
+### Bookings
+
+Counting law for the whole family is the table in §8 (yellow 1 card / 10 pts, red 2 / 25,
+max 3 / 35 per player).
+
+| Market | You are predicting |
+|---|---|
+| Booking 1X2 | Which team receives more bookings |
+| 1st Booking | Which team is booked first — Home / None / Away |
+| Nth Booking | Which team receives the Nth booking |
+| Total Bookings | Total bookings (cards) vs a line |
+| Total Booking Points | Total booking points vs a line |
+| Home Team Total Bookings / Away Team Total Bookings | One team's bookings vs a line |
+| Exact Bookings / Home Team Exact Bookings / Away Team Exact Bookings | The exact number of bookings (match or one team) |
+| Booking Point Range | Total booking points fall inside a range |
+| Sending Off / Home Team Sending Off / Away Team Sending Off | A player is sent off (match, or for the named team) |
+| 1st Half – Booking 1X2 / 1st Half – Nth Booking / 1st Half – Total Booking Points / 1st Half – Total Bookings | The booking markets scoped to the 1st half |
+| 1st Half – Home Team Total Bookings / 1st Half – Away Team Total Bookings | One team's 1st-half bookings vs a line |
+| 1st Half – Exact Bookings / 1st Half – Home Team Exact Bookings / 1st Half – Away Team Exact Bookings | Exact 1st-half bookings (match or one team) |
+| 1st Half – Booking Point Range / 1st Half – Sending Off / 1st Half – Home Team Sending Off / 1st Half – Away Team Sending Off | Range and sendings-off, 1st half |
+| 5/10/15 minutes – Booking 1X2 from a to b | More bookings inside the window |
+| 5/10/15 minutes – Total Bookings from a to b | Window bookings vs a line |
+| 5/10/15 minutes – Sending Off from a to b / 5/10/15 minutes – Home Team Sending Off from a to b / 5/10/15 minutes – Away Team Sending Off from a to b | A sending-off inside the window |
+
+### Player markets
+
+Settlement starts from the stat definitions in §9 and the participation / no-start rules
+there. Every market below is per named player.
+
+| Market | You are predicting |
+|---|---|
+| First Goalscorer / Anytime Goalscorer / Last Goalscorer / Nth Goalscorer | The player scores the first / any / last / Nth goal (own goals: §9) |
+| First To Score for Their Team | The player scores his team's first goal |
+| To Score in First 10 Mins | The player scores inside the first 10 minutes |
+| Player To Score In 1st Half / Player To Score In 2nd Half / Player To Score in Both Halves | The player scores in the named half / in each half |
+| Player to Score 2+ / To Score or Assist / To Score and Assist | The player's goal-assist combinations |
+| To Score a Header / Player To Score a Free-Kick | The goal is scored with a header / from a direct free kick |
+| Player To Score with Right Foot / Player To Score with Left Foot | The goal is scored with the named foot |
+| Player Score from Outside Box | The goal is scored from outside the area |
+| Player Goals / Player Assists | The player scores / assists at all in regular time (lines versions exist as totals) |
+| Player Shots / Player Total Shots | The player's total shots vs a line (definition: §9) |
+| Player Shots on Target / Player Total Shots On Goal | Shots on target vs a line |
+| Player Shots on Target from Outside Box | SoT from outside the box vs a line |
+| Player Right Foot Shots on Target / Player Left Foot Shots on Target | SoT with the named foot vs a line |
+| Player 1st Half Shots on Target / Player 2nd Half Shots on Target / Player Shots on Target Each Half | SoT in the named half / in each half |
+| Player Total Attempted Passes / Player Total Passes / Player Passes | Attempted passes vs a line (definition: §9) |
+| Player Tackles / Player Total tackles | Tackles vs a line (definition: §9) |
+| Player Fouls | Fouls committed vs a line |
+| Player Offsides | Offsides vs a line |
+| Player Steals | Steals vs a line |
+| Player Saves | Goalkeeper saves vs a line |
+| Player To Be Carded / First Player Booked | The player is carded / is the first player carded |
+| Player Not to Score | The player does **not** score (voids if he doesn't start — §9) |
+| Player H2H | One named player out-performs another on the paired stat (voids if either doesn't start — §9) |
+| Posts and Crossbars (player/team) | Shots hitting woodwork — a woodwork shot that goes in counts as a goal, not woodwork |
+
+### Combination markets
+
+The "&" family needs **both** legs; the "or" family needs **either** leg (see §11).
+
+| Market | Legs |
+|---|---|
+| 1X2 & GG/NG | Result + both teams score |
+| 1X2 & Over/Under | Result + total goals vs a line |
+| Over/Under & GG/NG | Total goals line + both teams score |
+| Double Chance & GG/NG / Double Chance & Over/Under | Double Chance + the named second leg |
+| Double Chance & 1st Half GG/NG / Double Chance & 2nd Half GG/NG | Double Chance (match) + GG/NG in the named half |
+| 1st Half – Double Chance & GG/NG / 2nd Half – Double Chance & GG/NG | Half Double Chance + half GG/NG |
+| 1st Half – 1X2 & GG/NG / 1st Half – 1X2 & Over/Under | 1st-half result + the named second leg |
+| 2nd Half – 1X2 & GG/NG / 2nd Half – 1X2 & Over/Under | 2nd-half result + the named second leg |
+| Half Time/Full Time & Over/Under | HT/FT + match total vs a line |
+| Half Time/Full Time & 1st Half Over/Under | HT/FT + 1st-half total vs a line |
+| Half Time/Full Time & Exact Goals | HT/FT + exact match goals |
+| Home Team or Over Goals / Home Team or Under Goals | Home win **or** the goals line lands |
+| Draw or Over Goals / Draw or Under Goals | Draw **or** the goals line lands |
+| Away Team or Over Goals / Away Team or Under Goals | Away win **or** the goals line lands |
+| Home Team or GG/NG / Draw or GG/NG / Away Team or GG/NG | The result leg **or** both teams score |
+| Home Team or Any Clean Sheet / Draw or Any Clean Sheet / Away Team or Any Clean Sheet | The result leg **or** either team keeps a clean sheet |
+
+### Overtime and penalty shootouts
+
+The full family is tabled in §15: Overtime & Goal, Overtime – 1X2, Overtime – Nth Goal,
+Overtime – Over/Under, Overtime – Handicap, Overtime – Correct Score, Overtime – Which Team
+Will Win the Rest, Overtime 1st Half – 1X2 / Overtime 1st Half – Handicap / Overtime 1st Half – Correct Score, Will There Be
+Overtime, and the twelve Penalty Shootout markets (Winner, Winner & Over/Under, Winning
+Margin, Over/Under, Exact Goals, Odd/Even, Nth Penalty Scored, Nth Goal, Home/Away
+Over/Under, Home/Away Odd/Even, Correct Score).
+
+### EarlyWin (football.com, pre-match only)
+
+The full family is tabled in §10: 1X2 (1UP), 1X2 (2UP), team 1UP/2UP/3UP, Double Chance (1UP),
+DrawSave, Over/Under (GoalRush), Over/Under EarlyGoals (the football.com manual's name for
+the early ladder — Over 1.5 needs 1 goal by 10′, Over 2.5 needs 2 by 30′, Over 3.5 needs 3
+by 50′), Home/Away Over/Under EarlyGoals, and To Lead by 1 / 2 / 3 Goals at Any Time.
 
 ---
 
